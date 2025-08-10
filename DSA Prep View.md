@@ -2,6 +2,11 @@ Here’s the content from the Markdown file:
 
 ---
 
+
+# BIG O NOTATION
+
+https://www.freecodecamp.org/news/big-o-cheat-sheet-time-complexity-chart/
+
 # Practical Timetable to Learn DSA Completely
 
 Here is a practical, well-structured timetable to learn Data Structures and Algorithms (DSA) based on the previous structured stages (Beginner, Intermediate, Professional), designed for steady progress and completion. The timetable assumes about 10-12 hours per week, which balances focus and sustainability.
@@ -214,3 +219,6 @@ Citations:
 
 
 [9] Summarize.ing - Instant YouTube Video Summaries | AI-Powered ... https://summarize.ing
+
+
+
