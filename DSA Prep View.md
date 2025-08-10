@@ -5,6 +5,249 @@ Here’s the content from the Markdown file:
 
 # BIG O NOTATION
 
+Here’s your **Markdown** version with C# examples and proper `![alt text](image-url)` tags for images.
+I’ve used placeholder image names like `image1.png`, `image2.png` so you can replace them with the real paths later.
+
+---
+
+````markdown
+# Big O Cheat Sheet – Time Complexity Chart
+
+**Author:** Joel Olawanle  
+
+An algorithm is a set of well-defined instructions for solving a specific problem. You can solve these problems in various ways.
+
+This means that the method you use to arrive at the same solution may differ from mine, but we should both get the same result.
+
+Because there are various ways to solve a problem, there must be a way to evaluate these solutions or algorithms in terms of performance and efficiency (the time it will take for your algorithm to run/execute and the total amount of memory it will consume).
+
+This is critical for programmers to ensure that their applications run properly and to help them write clean code.
+
+This is where **Big O Notation** enters the picture. Big O Notation is a metric for determining the efficiency of an algorithm. It allows you to estimate how long your code will run on different sets of inputs and measure how effectively your code scales as the size of your input increases.
+
+---
+
+## What is Big O?
+
+Big O, also known as **Big O notation**, represents an algorithm's worst-case complexity. It uses algebraic terms to describe the complexity of an algorithm.
+
+Big O defines the runtime required to execute an algorithm by identifying how the performance of your algorithm will change as the input size grows. But it does not tell you how fast your algorithm's runtime is.
+
+Big O notation measures the efficiency and performance of your algorithm using **time** and **space complexity**.
+
+---
+
+## What is Time and Space Complexity?
+
+One major underlying factor affecting your program's performance and efficiency is the hardware, OS, and CPU you use.
+
+But you don't consider this when you analyze an algorithm's performance. Instead, the **time** and **space complexity** as a function of the input's size are what matters.
+
+- **Time complexity** specifies how long it will take to execute an algorithm as a function of its input size.  
+- **Space complexity** specifies the total amount of space or memory required to execute an algorithm as a function of the size of the input.
+
+We will be focusing on **time complexity** in this guide.
+
+---
+
+## Why is time complexity a function of its input size?
+
+To perfectly grasp the concept of "as a function of input size," imagine you have an algorithm that computes the sum of numbers based on your input.  
+
+If your input is 4, it will add `1+2+3+4` to output 10; if your input is 5, it will output 15 (meaning `1+2+3+4+5`).
+
+```csharp
+int CalculateSum(int input)
+{
+    int sum = 0;
+    for (int i = 0; i <= input; i++)
+    {
+        sum += i;
+    }
+    return sum;
+}
+````
+
+![Loop execution diagram](image1.png)
+
+Looking at the image above, we only have three statements. Still, because there is a loop, the second statement will be executed based on the input size, so if the input is four, the second statement will be executed four times, meaning the entire algorithm will run six (4 + 2) times.
+
+In plain terms, the algorithm will run `input + 2` times, where input can be any number. This shows that it's expressed in terms of the input. In other words, it is a function of the input size.
+
+---
+
+## Major Types of Time Complexity
+
+* **Constant:** `O(1)`
+* **Linear time:** `O(n)`
+* **Logarithmic time:** `O(log n)`
+* **Quadratic time:** `O(n^2)`
+* **Exponential time:** `O(2^n)`
+* **Factorial time:** `O(n!)`
+
+---
+
+## Big O Complexity Chart
+
+The Big O chart, also known as the Big O graph, is an asymptotic notation used to express the complexity of an algorithm or its performance as a function of input size.
+
+This helps programmers identify and fully understand the worst-case scenario and the execution time or memory required by an algorithm.
+
+![Big O Complexity Graph](image2.png)
+
+The chart above shows:
+
+* `O(1)` – **Excellent/Best**
+* `O(log n)` – **Good**
+* `O(n)` – **Fair**
+* `O(n log n)` – **Bad**
+* `O(n^2)`, `O(2^n)`, `O(n!)` – **Horrible/Worst**
+
+---
+
+### Rules of Thumb
+
+* **O(1):** Not dependent on input size.
+* **O(log n):** Input size is reduced by half each step.
+* **O(n):** Single loop.
+* **O(n^2):** Nested loops.
+* **O(2^n):** Doubles with each addition to input.
+
+---
+
+# Big O Time Complexity Examples
+
+---
+
+## Constant Time: `O(1)`
+
+When your algorithm is **not** dependent on the input size `n`, it is constant time.
+
+```csharp
+T FirstElement<T>(List<T> list)
+{
+    return list[0];
+}
+
+var scores = new List<int> { 12, 55, 67, 94, 22 };
+Console.WriteLine(FirstElement(scores)); // 12
+```
+
+Even with 1 million elements, this will take the same time.
+
+---
+
+## Linear Time: `O(n)`
+
+Runtime increases proportionally with input size.
+
+```csharp
+long CalcFactorial(int n)
+{
+    long factorial = 1;
+    for (int i = 2; i <= n; i++)
+    {
+        factorial *= i;
+    }
+    return factorial;
+}
+
+Console.WriteLine(CalcFactorial(5)); // 120
+```
+
+---
+
+## Logarithmic Time: `O(log n)`
+
+Input size reduces by half each step (e.g., binary search).
+
+```csharp
+int BinarySearch(int[] array, int target)
+{
+    int firstIndex = 0;
+    int lastIndex = array.Length - 1;
+
+    while (firstIndex <= lastIndex)
+    {
+        int middleIndex = (firstIndex + lastIndex) / 2;
+
+        if (array[middleIndex] == target)
+            return middleIndex;
+
+        if (array[middleIndex] > target)
+            lastIndex = middleIndex - 1;
+        else
+            firstIndex = middleIndex + 1;
+    }
+    return -1;
+}
+
+int[] scores = { 12, 22, 45, 67, 96 };
+Console.WriteLine(BinarySearch(scores, 96)); // 4
+```
+
+---
+
+## Quadratic Time: `O(n^2)`
+
+Nested loops cause runtime to grow as the square of input size.
+
+```csharp
+string MatchElements(List<string> list)
+{
+    for (int i = 0; i < list.Count; i++)
+    {
+        for (int j = 0; j < list.Count; j++)
+        {
+            if (i != j && list[i] == list[j])
+            {
+                return $"Match found at {i} and {j}";
+            }
+        }
+    }
+    return "No matches found 😞";
+}
+
+var fruits = new List<string> { "🍓", "🍐", "🍊", "🍌", "🍍", "🍑", "🍎", "🍈", "🍊", "🍇" };
+Console.WriteLine(MatchElements(fruits));
+```
+
+---
+
+## Exponential Time: `O(2^n)`
+
+Growth rate doubles with each additional input unit.
+
+```csharp
+int RecursiveFibonacci(int n)
+{
+    if (n < 2)
+        return n;
+    return RecursiveFibonacci(n - 1) + RecursiveFibonacci(n - 2);
+}
+
+Console.WriteLine(RecursiveFibonacci(6)); // 8
+```
+
+---
+
+## Wrapping Up
+
+You’ve learned:
+
+* What time complexity is.
+* How Big O notation measures algorithm efficiency.
+* Major complexity categories.
+* C# examples for each case.
+
+```
+
+---
+
+Do you want me to now **replace the placeholder image paths** with the **actual Big O cheat sheet diagram URLs** so the `.md` will render them without you having to manually update? That way you can directly open it in a Markdown viewer and see the charts.
+```
+
+
 https://www.freecodecamp.org/news/big-o-cheat-sheet-time-complexity-chart/
 
 # Practical Timetable to Learn DSA Completely
