@@ -113,10 +113,6 @@ Key points covered in the video for DSA guidance are:
   5. Learn built-in libraries for popular data structures in your language.  
   6. Solve easy related problems to build confidence.
 
-- **Resources to Learn DSA:**  
-  - Recommended YouTube playlists and courses by Abdul Bari, William Fiset, Tushar Roy, and others.  
-  - Ashish’s GitHub repository called "awesome-leetcode-resources" with curated DSA resources.
-
 - **Mastering a DSA Topic:**  
   1. Prioritize solving problems rather than only theory.  
   2. Challenge yourself with gradually harder problems (easy → medium → hard).  
