@@ -7231,6 +7231,1330 @@ Would you like me to merge Round 9 (with code) into the big structured guide (We
 
 
 
+Perfect timing ⚡ — this is exactly how senior interview prep should be done.
+Instead of brute-forcing every problem, you need to master DSA patterns — because 80% of interview questions are just variations of a handful of patterns.
+
+I’ll give you:
+
+1. Core Patterns (14–15 patterns cover 80%+ of FAANG/interview problems).
+
+
+2. Concept + Use Cases.
+
+
+3. Python & C# code snippets with explanations.
+
+
+4. Interview angle (what the interviewer is checking).
+
+
+
+
+---
+
+🚀 DSA Patterns that Cover 80% of Interviews
+
+
+---
+
+1. Sliding Window
+
+📌 Used for subarray/substring problems with contiguous elements.
+
+Example: Longest Substring Without Repeating Characters
+
+Python
+
+def length_of_longest_substring(s):
+    seen = {}
+    left = 0
+    max_len = 0
+    for right, ch in enumerate(s):
+        if ch in seen and seen[ch] >= left:
+            left = seen[ch] + 1
+        seen[ch] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len
+
+print(length_of_longest_substring("abcabcbb"))  # 3
+
+C#
+
+public static int LengthOfLongestSubstring(string s)
+{
+    var seen = new Dictionary<char,int>();
+    int left = 0, maxLen = 0;
+    for (int right = 0; right < s.Length; right++)
+    {
+        if (seen.ContainsKey(s[right]) && seen[s[right]] >= left)
+            left = seen[s[right]] + 1;
+        seen[s[right]] = right;
+        maxLen = Math.Max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+
+✅ Interview focus: Do you know how to shrink & expand windows efficiently?
+
+
+---
+
+2. Two Pointers
+
+📌 Used in sorted arrays or linked lists.
+
+Example: Two Sum (Sorted Array)
+
+Python
+
+def two_sum(nums, target):
+    l, r = 0, len(nums)-1
+    while l < r:
+        s = nums[l] + nums[r]
+        if s == target: return [l, r]
+        elif s < target: l += 1
+        else: r -= 1
+    return []
+
+print(two_sum([2,7,11,15], 9))  # [0,1]
+
+C#
+
+public static int[] TwoSum(int[] nums, int target)
+{
+    int l = 0, r = nums.Length - 1;
+    while (l < r)
+    {
+        int sum = nums[l] + nums[r];
+        if (sum == target) return new int[]{l, r};
+        else if (sum < target) l++;
+        else r--;
+    }
+    return Array.Empty<int>();
+}
+
+✅ Interview focus: Can you avoid brute force and leverage sorted order?
+
+
+---
+
+3. Fast & Slow Pointers (Cycle Detection)
+
+📌 Linked lists & cycle detection.
+
+Example: Detect Cycle in Linked List
+
+Python
+
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow == fast:
+            return True
+    return False
+
+C#
+
+public static bool HasCycle(ListNode head)
+{
+    var slow = head; var fast = head;
+    while (fast != null && fast.next != null)
+    {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+
+✅ Interview focus: Do you know Floyd’s cycle-finding trick?
+
+
+---
+
+4. Merge Intervals
+
+📌 Problems where intervals overlap (calendar scheduling, ranges).
+
+Python
+
+def merge(intervals):
+    intervals.sort()
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+
+print(merge([[1,3],[2,6],[8,10],[15,18]]))
+
+C#
+
+public static int[][] Merge(int[][] intervals)
+{
+    Array.Sort(intervals, (a,b) => a[0].CompareTo(b[0]));
+    var result = new List<int[]>();
+    var current = intervals[0];
+    foreach (var interval in intervals.Skip(1))
+    {
+        if (interval[0] <= current[1])
+            current[1] = Math.Max(current[1], interval[1]);
+        else
+        {
+            result.Add(current);
+            current = interval;
+        }
+    }
+    result.Add(current);
+    return result.ToArray();
+}
+
+✅ Interview focus: Do you understand interval sorting & merging?
+
+
+---
+
+5. Binary Search on Answer
+
+📌 When search space is not the array but a "range of answers".
+
+Example: Minimum Capacity to Ship Packages in D Days
+
+Python
+
+def ship_within_days(weights, days):
+    def can_ship(cap):
+        d, curr = 1, 0
+        for w in weights:
+            if curr + w > cap:
+                d += 1
+                curr = 0
+            curr += w
+        return d <= days
+    
+    l, r = max(weights), sum(weights)
+    while l < r:
+        mid = (l+r)//2
+        if can_ship(mid):
+            r = mid
+        else:
+            l = mid+1
+    return l
+
+C#
+
+public static int ShipWithinDays(int[] weights, int days)
+{
+    int l = weights.Max(), r = weights.Sum();
+    while (l < r)
+    {
+        int mid = (l+r)/2;
+        int d = 1, curr = 0;
+        foreach (var w in weights)
+        {
+            if (curr + w > mid)
+            {
+                d++;
+                curr = 0;
+            }
+            curr += w;
+        }
+        if (d <= days) r = mid;
+        else l = mid+1;
+    }
+    return l;
+}
+
+✅ Interview focus: Can you apply binary search beyond sorted arrays?
+
+
+---
+
+6. BFS/DFS (Graph Traversal)
+
+📌 For trees, grids, and graph problems.
+
+Example: Number of Islands (Grid BFS)
+
+Python
+
+def num_islands(grid):
+    if not grid: return 0
+    n, m = len(grid), len(grid[0])
+    visited = set()
+    
+    def dfs(i, j):
+        if (i<0 or j<0 or i>=n or j>=m or grid[i][j]=="0" or (i,j) in visited): return
+        visited.add((i,j))
+        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)
+
+    count = 0
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j]=="1" and (i,j) not in visited:
+                dfs(i,j)
+                count += 1
+    return count
+
+C#
+
+public static int NumIslands(char[][] grid)
+{
+    int n = grid.Length, m = grid[0].Length;
+    bool[,] visited = new bool[n, m];
+    int count = 0;
+
+    void Dfs(int i, int j)
+    {
+        if (i<0 || j<0 || i>=n || j>=m || grid[i][j]=='0' || visited[i,j]) return;
+        visited[i,j] = true;
+        Dfs(i+1,j); Dfs(i-1,j); Dfs(i,j+1); Dfs(i,j-1);
+    }
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            if (grid[i][j]=='1' && !visited[i,j]) { Dfs(i,j); count++; }
+
+    return count;
+}
+
+✅ Interview focus: Do you know recursion/stack/queue trade-offs?
+
+
+---
+
+7. Topological Sort
+
+📌 Used in dependency problems (course schedule, build systems).
+
+
+---
+
+8. Backtracking
+
+📌 Used for permutations, subsets, N-Queens.
+
+
+---
+
+9. Dynamic Programming – Subset Patterns
+
+📌 (Knapsack, LCS, Coin Change, Partition Equal Subset Sum)
+
+
+---
+
+10. Greedy
+
+📌 Interval scheduling, Huffman coding, activity selection.
+
+
+---
+
+11. Heap / Priority Queue
+
+📌 Kth largest, meeting rooms, merge K sorted lists.
+
+
+---
+
+12. Union-Find (Disjoint Set Union)
+
+📌 Connectivity, Kruskal’s MST, cycle detection in undirected graphs.
+
+
+---
+
+13. Prefix Sum / Difference Array
+
+📌 Range queries, subarray sum, 2D matrix queries.
+
+
+---
+
+14. Monotonic Stack / Queue
+
+📌 Next Greater Element, Stock Span, Sliding Window Maximum.
+
+
+---
+
+15. Trie / String Matching
+
+📌 Word search, autocomplete, longest prefix.
+
+
+---
+
+🔑 If you master these 15 patterns, you can solve 80%+ of interview questions by recognizing which pattern applies.
+
+
+---
+
+👉 Do you want me to now expand all 15 patterns with one solved problem (Python + C#) each, or should I make a cheat-sheet style mapping (Pattern → Classic Problems → Links to Rounds we already did) so it’s compact?
+
+
+
+
+
+Perfect ✅ That’s the most practical way to learn — each pattern gets 1 solved problem (with Python + C# snippets, explanation, and interview angle).
+
+Here’s the full set of 15 patterns with one solved problem each:
+
+
+---
+
+🚀 DSA Patterns (15) with Solved Problems
+
+
+---
+
+1. Sliding Window
+
+📌 Pattern: Find subarrays/substrings within a window.
+
+Problem: Longest Substring Without Repeating Characters
+
+Python
+
+def length_of_longest_substring(s):
+    seen, left, max_len = {}, 0, 0
+    for right, ch in enumerate(s):
+        if ch in seen and seen[ch] >= left:
+            left = seen[ch] + 1
+        seen[ch] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len
+
+print(length_of_longest_substring("abcabcbb"))  # 3
+
+C#
+
+public static int LengthOfLongestSubstring(string s)
+{
+    var seen = new Dictionary<char,int>();
+    int left = 0, maxLen = 0;
+    for (int right = 0; right < s.Length; right++)
+    {
+        if (seen.ContainsKey(s[right]) && seen[s[right]] >= left)
+            left = seen[s[right]] + 1;
+        seen[s[right]] = right;
+        maxLen = Math.Max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+
+✅ Interview focus: Efficient handling of substrings, avoiding brute force.
+
+
+---
+
+2. Two Pointers
+
+📌 Pattern: Work from both ends of sorted array.
+
+Problem: Two Sum (Sorted Array)
+
+Python
+
+def two_sum(nums, target):
+    l, r = 0, len(nums)-1
+    while l < r:
+        s = nums[l] + nums[r]
+        if s == target: return [l, r]
+        elif s < target: l += 1
+        else: r -= 1
+    return []
+
+print(two_sum([2,7,11,15], 9))  # [0,1]
+
+C#
+
+public static int[] TwoSum(int[] nums, int target)
+{
+    int l = 0, r = nums.Length - 1;
+    while (l < r)
+    {
+        int sum = nums[l] + nums[r];
+        if (sum == target) return new[]{l, r};
+        else if (sum < target) l++;
+        else r--;
+    }
+    return Array.Empty<int>();
+}
+
+✅ Interview focus: Recognizing sorted data structure opportunities.
+
+
+---
+
+3. Fast & Slow Pointers
+
+📌 Pattern: Detect cycles.
+
+Problem: Linked List Cycle Detection
+
+Python
+
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow == fast: return True
+    return False
+
+C#
+
+public static bool HasCycle(ListNode head)
+{
+    var slow = head; var fast = head;
+    while (fast != null && fast.next != null)
+    {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+
+✅ Interview focus: Classic Floyd’s algorithm — appears in 1/3rd of LL problems.
+
+
+---
+
+4. Merge Intervals
+
+📌 Pattern: Handle overlapping ranges.
+
+Problem: Merge Overlapping Intervals
+
+Python
+
+def merge(intervals):
+    intervals.sort()
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+
+C#
+
+public static int[][] Merge(int[][] intervals)
+{
+    Array.Sort(intervals, (a,b) => a[0].CompareTo(b[0]));
+    var result = new List<int[]>();
+    var current = intervals[0];
+    foreach (var interval in intervals.Skip(1))
+    {
+        if (interval[0] <= current[1])
+            current[1] = Math.Max(current[1], interval[1]);
+        else { result.Add(current); current = interval; }
+    }
+    result.Add(current);
+    return result.ToArray();
+}
+
+✅ Interview focus: Can you sort & merge efficiently?
+
+
+---
+
+5. Binary Search on Answer
+
+📌 Pattern: Search in range of feasible answers.
+
+Problem: Minimum Capacity to Ship Packages in D Days
+
+Python
+
+def ship_within_days(weights, days):
+    def can_ship(cap):
+        d, curr = 1, 0
+        for w in weights:
+            if curr + w > cap:
+                d += 1
+                curr = 0
+            curr += w
+        return d <= days
+    
+    l, r = max(weights), sum(weights)
+    while l < r:
+        mid = (l+r)//2
+        if can_ship(mid): r = mid
+        else: l = mid+1
+    return l
+
+C#
+
+public static int ShipWithinDays(int[] weights, int days)
+{
+    int l = weights.Max(), r = weights.Sum();
+    while (l < r)
+    {
+        int mid = (l+r)/2;
+        int d = 1, curr = 0;
+        foreach (var w in weights)
+        {
+            if (curr + w > mid) { d++; curr = 0; }
+            curr += w;
+        }
+        if (d <= days) r = mid;
+        else l = mid+1;
+    }
+    return l;
+}
+
+✅ Interview focus: Know when to apply binary search beyond arrays.
+
+
+---
+
+6. BFS/DFS
+
+📌 Pattern: Graph traversal.
+
+Problem: Number of Islands
+
+Python
+
+def num_islands(grid):
+    if not grid: return 0
+    n, m = len(grid), len(grid[0])
+    visited = set()
+    
+    def dfs(i, j):
+        if i<0 or j<0 or i>=n or j>=m or grid[i][j]=="0" or (i,j) in visited: return
+        visited.add((i,j))
+        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)
+
+    count = 0
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j]=="1" and (i,j) not in visited:
+                dfs(i,j)
+                count += 1
+    return count
+
+C#
+
+public static int NumIslands(char[][] grid)
+{
+    int n = grid.Length, m = grid[0].Length;
+    bool[,] visited = new bool[n,m];
+    int count = 0;
+
+    void Dfs(int i, int j)
+    {
+        if (i<0 || j<0 || i>=n || j>=m || grid[i][j]=='0' || visited[i,j]) return;
+        visited[i,j] = true;
+        Dfs(i+1,j); Dfs(i-1,j); Dfs(i,j+1); Dfs(i,j-1);
+    }
+
+    for (int i=0;i<n;i++)
+        for (int j=0;j<m;j++)
+            if (grid[i][j]=='1' && !visited[i,j]) { Dfs(i,j); count++; }
+
+    return count;
+}
+
+✅ Interview focus: Traversal patterns & visited checks.
+
+
+---
+
+7. Topological Sort
+
+📌 Pattern: Order tasks with dependencies.
+
+Problem: Course Schedule II
+
+Python
+
+from collections import defaultdict, deque
+def find_order(numCourses, prerequisites):
+    graph = defaultdict(list)
+    indegree = [0]*numCourses
+    for u,v in prerequisites:
+        graph[v].append(u)
+        indegree[u]+=1
+    
+    q = deque([i for i in range(numCourses) if indegree[i]==0])
+    order = []
+    while q:
+        node = q.popleft()
+        order.append(node)
+        for nei in graph[node]:
+            indegree[nei]-=1
+            if indegree[nei]==0: q.append(nei)
+    return order if len(order)==numCourses else []
+
+C#
+
+public static int[] FindOrder(int numCourses, int[][] prerequisites)
+{
+    var graph = new List<int>[numCourses];
+    int[] indegree = new int[numCourses];
+    for (int i=0;i<numCourses;i++) graph[i] = new List<int>();
+    foreach (var p in prerequisites)
+    {
+        graph[p[1]].Add(p[0]);
+        indegree[p[0]]++;
+    }
+    var q = new Queue<int>();
+    for (int i=0;i<numCourses;i++) if (indegree[i]==0) q.Enqueue(i);
+
+    var order = new List<int>();
+    while (q.Count>0)
+    {
+        int node=q.Dequeue();
+        order.Add(node);
+        foreach(var nei in graph[node])
+            if(--indegree[nei]==0) q.Enqueue(nei);
+    }
+    return order.Count==numCourses ? order.ToArray() : Array.Empty<int>();
+}
+
+✅ Interview focus: Kahn’s algorithm, cycle detection.
+
+
+---
+
+8. Backtracking
+
+📌 Pattern: Explore all possibilities.
+
+Problem: Generate Subsets
+
+Python
+
+def subsets(nums):
+    res = []
+    def backtrack(start, path):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            backtrack(i+1, path+[nums[i]])
+    backtrack(0, [])
+    return res
+
+C#
+
+public static IList<IList<int>> Subsets(int[] nums)
+{
+    var res = new List<IList<int>>();
+    void Backtrack(int start, List<int> path)
+    {
+        res.Add(new List<int>(path));
+        for (int i=start;i<nums.Length;i++)
+        {
+            path.Add(nums[i]);
+            Backtrack(i+1, path);
+            path.RemoveAt(path.Count-1);
+        }
+    }
+    Backtrack(0,new List<int>());
+    return res;
+}
+
+✅ Interview focus: Recursion & state backtracking.
+
+
+---
+
+9. DP (Knapsack Pattern)
+
+📌 Problem: Partition Equal Subset Sum
+
+Python
+
+def can_partition(nums):
+    total = sum(nums)
+    if total % 2: return False
+    target = total//2
+    dp = [False]*(target+1)
+    dp[0] = True
+    for num in nums:
+        for i in range(target,num-1,-1):
+            dp[i] = dp[i] or dp[i-num]
+    return dp[target]
+
+C#
+
+public static bool CanPartition(int[] nums)
+{
+    int total = nums.Sum();
+    if (total%2!=0) return false;
+    int target = total/2;
+    bool[] dp = new bool[target+1];
+    dp[0] = true;
+    foreach (int num in nums)
+        for (int i=target;i>=num;i--)
+            dp[i] = dp[i] || dp[i-num];
+    return dp[target];
+}
+
+✅ Interview focus: Knapsack transformation.
+
+
+---
+
+10. Greedy
+
+📌 Problem: Activity Selection
+
+(Already covered in Round 10 earlier)
+
+
+---
+
+11. Heap / Priority Queue
+
+📌 Problem: Kth Largest Element
+
+Python
+
+import heapq
+def kth_largest(nums, k):
+    return heapq.nlargest(k, nums)[-1]
+
+print(kth_largest([3,2,1,5,6,4],2))  # 5
+
+C#
+
+public static int FindKthLargest(int[] nums, int k)
+{
+    var pq = new PriorityQueue<int,int>();
+    foreach (var num in nums)
+    {
+        pq.Enqueue(num,num);
+        if (pq.Count>k) pq.Dequeue();
+    }
+    return pq.Peek();
+}
+
+✅ Interview focus: Heap size control for efficiency.
+
+
+---
+
+12. Union-Find (DSU)
+
+📌 Problem: Connected Components in Graph
+
+Python
+
+def findCircleNum(isConnected):
+    n=len(isConnected)
+    parent=list(range(n))
+    def find(x):
+        if parent[x]!=x: parent[x]=find(parent[x])
+        return parent[x]
+    for i in range(n):
+        for j in range(i+1,n):
+            if isConnected[i][j]:
+                parent[find(i)] = find(j)
+    return len(set(find(x) for x in range(n)))
+
+C#
+
+public static int FindCircleNum(int[][] isConnected)
+{
+    int n=isConnected.Length;
+    int[] parent=Enumerable.Range(0,n).ToArray();
+    int Find(int x){ if(parent[x]!=x) parent[x]=Find(parent[x]); return parent[x]; }
+    for(int i=0;i<n;i++)
+        for(int j=i+1;j<n;j++)
+            if(isConnected[i][j]==1)
+                parent[Find(i)]=Find(j);
+    return parent.Select(Find).Distinct().Count();
+}
+
+✅ Interview focus: Union-Find parent compression.
+
+
+---
+
+13. Prefix Sum
+
+📌 Problem: Subarray Sum Equals K
+
+Python
+
+def subarray_sum(nums, k):
+    count, prefix, d = 0, 0, {0:1}
+    for num in nums:
+        prefix += num
+        count += d.get(prefix-k,0)
+        d[prefix] = d.get(prefix,0)+1
+    return count
+
+C#
+
+public static int SubarraySum(int[] nums, int k)
+{
+    int count=0, prefix=0;
+    var dict=new Dictionary<int,int>{{0,1}};
+    foreach(int num in nums)
+    {
+        prefix+=num;
+        if(dict.ContainsKey(prefix-k)) count+=dict[prefix-k];
+        if(!dict.ContainsKey(prefix)) dict[prefix]=0;
+        dict[prefix]++;
+    }
+    return count;
+}
+
+✅ Interview focus: Using prefix hashmaps effectively.
+
+
+---
+
+14. Monotonic Stack
+
+📌 Problem: Next Greater Element
+
+Python
+
+def next_greater(nums):
+    res = [-1]*len(nums)
+    stack = []
+    for i in range(len(nums)):
+        while stack and nums[i] > nums[stack[-1]]:
+            res[stack.pop()] = nums[i]
+        stack.append(i)
+    return res
+
+C#
+
+public static int[] NextGreater(int[] nums)
+{
+    int[] res=new int[nums.Length];
+    Array.Fill(res,-1);
+    var stack=new Stack<int>();
+    for(int i=0;i<nums.Length;i++)
+    {
+        while(stack.Count>0 && nums[i]>nums[stack.Peek()])
+            res[stack.Pop()]=nums[i];
+        stack.Push(i);
+    }
+    return res;
+}
+
+✅ Interview focus: Stack usage for "next/previous" problems.
+
+
+---
+
+15. Trie
+
+📌 Problem: Implement Trie (Prefix Tree)
+
+Python
+
+class TrieNode:
+    def __init__(self):
+        self.children={}
+        self.isEnd=False
+
+class Trie:
+    def __init__(self): self.root=TrieNode()
+    def insert(self,word):
+        node=self.root
+        for ch in word:
+            node=node.children.setdefault(ch,TrieNode())
+        node.isEnd=True
+    def search(self,word):
+        node=self.root
+        for ch in word:
+            if ch not in node.children: return False
+            node=node.children[ch]
+        return node.isEnd
+
+C#
+
+public class TrieNode
+{
+    public Dictionary<char,TrieNode> Children=new();
+    public bool IsEnd=false;
+}
+
+public class Trie
+{
+    private TrieNode root=new();
+    public void Insert(string word)
+    {
+        var node=root;
+        foreach(char ch in word)
+        {
+            if(!node.Children.ContainsKey(ch))
+                node.Children[ch]=new TrieNode();
+            node=node.Children[ch];
+        }
+        node.IsEnd=true;
+    }
+    public bool Search(string word)
+    {
+        var node=root;
+        foreach(char ch in word)
+        {
+            if(!node.Children.ContainsKey(ch)) return false;
+            node=node.Children[ch];
+        }
+        return node.IsEnd;
+    }
+}
+
+✅ Interview focus: Understanding tries for prefix-based problems.
+
+
+---
+
+🔥 That’s the 15 essential DSA patterns each with 1 solved problem in Python & C#.
+If you master these, you’ll recognize 80%+ of real interview problems instantly.
+
+
+---
+
+Would you like me to also prepare a “Pattern → Problem Variants Cheat Sheet” (e.g. Sliding Window → Longest Substring, Max Sum Subarray, Min Window Substring), so you can map one pattern to multiple common interview questions?
+
+
+
+
+Perfect 👍
+Here’s the DSA Pattern → Common Problem Variants Cheat Sheet.
+
+This is the map you’ll use in interviews:
+👉 Recognize the pattern → Recall variants → Apply template → Solve quickly.
+
+
+---
+
+🧩 DSA Patterns → Common Interview Problem Variants
+
+
+---
+
+1. Sliding Window
+
+📌 Template for substrings/subarrays within a window.
+✅ Variants:
+
+Longest Substring Without Repeating Characters
+
+Minimum Window Substring
+
+Longest Substring with At Most K Distinct Characters
+
+Maximum Sum Subarray of Size K
+
+Count of Anagrams in a String
+
+
+
+---
+
+2. Two Pointers
+
+📌 Work from both ends of sorted array.
+✅ Variants:
+
+Two Sum (Sorted Array)
+
+Container With Most Water
+
+Trapping Rain Water
+
+Remove Duplicates from Sorted Array
+
+3Sum / 4Sum
+
+
+
+---
+
+3. Fast & Slow Pointers (Floyd’s Algorithm)
+
+📌 Cycle detection / middle element.
+✅ Variants:
+
+Detect Cycle in Linked List
+
+Find Start of Cycle in Linked List
+
+Find Middle of Linked List
+
+Happy Number Problem
+
+Palindrome Linked List
+
+
+
+---
+
+4. Merge Intervals
+
+📌 Sort intervals, merge overlaps.
+✅ Variants:
+
+Merge Intervals
+
+Insert Interval
+
+Meeting Rooms I & II
+
+Employee Free Time
+
+Minimum Number of Arrows to Burst Balloons
+
+
+
+---
+
+5. Binary Search on Answer
+
+📌 Search in feasible answer space instead of index.
+✅ Variants:
+
+Capacity to Ship Packages in D Days
+
+Split Array Largest Sum
+
+Koko Eating Bananas
+
+Median of Two Sorted Arrays
+
+Aggressive Cows (classic)
+
+
+
+---
+
+6. BFS/DFS
+
+📌 Graph / grid traversal.
+✅ Variants:
+
+Number of Islands
+
+Word Ladder
+
+Rotten Oranges
+
+Clone Graph
+
+Pacific Atlantic Water Flow
+
+
+
+---
+
+7. Topological Sort
+
+📌 Order with dependencies.
+✅ Variants:
+
+Course Schedule I & II
+
+Alien Dictionary
+
+Minimum Height Trees
+
+Task Scheduling
+
+Detect Cycle in Directed Graph
+
+
+
+---
+
+8. Backtracking
+
+📌 Explore all possibilities with pruning.
+✅ Variants:
+
+Subsets / Subsets with Duplicates
+
+Permutations / Unique Permutations
+
+Combination Sum I, II, III
+
+Word Search
+
+N-Queens
+
+
+
+---
+
+9. Dynamic Programming (Knapsack Pattern)
+
+📌 Subsets, partitions, resource allocation.
+✅ Variants:
+
+0/1 Knapsack
+
+Partition Equal Subset Sum
+
+Target Sum
+
+Coin Change / Coin Change II
+
+Word Break
+
+
+
+---
+
+10. Greedy
+
+📌 Make locally optimal choice.
+✅ Variants:
+
+Activity Selection
+
+Jump Game I & II
+
+Gas Station
+
+Minimum Number of Platforms
+
+Huffman Encoding
+
+
+
+---
+
+11. Heap / Priority Queue
+
+📌 Keep track of smallest/largest efficiently.
+✅ Variants:
+
+Kth Largest Element in Array
+
+Merge K Sorted Lists
+
+Find Median from Data Stream
+
+Top K Frequent Elements
+
+Sliding Window Maximum
+
+
+
+---
+
+12. Union-Find (DSU)
+
+📌 Connected components, cycle detection.
+✅ Variants:
+
+Number of Provinces
+
+Redundant Connection
+
+Kruskal’s Minimum Spanning Tree
+
+Accounts Merge
+
+Friend Circles
+
+
+
+---
+
+13. Prefix Sum / Hashing
+
+📌 Prefix accumulation for quick range queries.
+✅ Variants:
+
+Subarray Sum Equals K
+
+Continuous Subarray Sum
+
+Range Sum Query (Immutable/Mutable)
+
+Maximum Size Subarray Sum Equals K
+
+Count Number of Nice Subarrays
+
+
+
+---
+
+14. Monotonic Stack / Queue
+
+📌 Next greater/smaller element, sliding windows.
+✅ Variants:
+
+Next Greater Element I & II
+
+Daily Temperatures
+
+Largest Rectangle in Histogram
+
+Trapping Rain Water (stack version)
+
+Sliding Window Maximum (deque version)
+
+
+
+---
+
+15. Trie (Prefix Tree)
+
+📌 Prefix-based searching.
+✅ Variants:
+
+Implement Trie (Insert/Search)
+
+Word Search II
+
+Replace Words
+
+Autocomplete System
+
+Longest Common Prefix
+
+
+
+---
+
+🏆 How to Use This Cheat Sheet
+
+1. Identify pattern in question (keywords: "longest substring", "kth largest", "dependencies").
+
+
+2. Recall base template (you already have snippets in Python & C#).
+
+
+3. Map it to one of these problem variants (you’ll see 80% of problems are just variations).
+
+
+4. Code confidently → interviewers care about pattern recognition more than memorization.
+
+
+
+
+---
+
+👉 Next step:
+Do you want me to now expand this into a “pattern-to-template code book” (where each pattern has a reusable template snippet + problem variants listed under it), so you can just plug-and-play in interviews?
+
+
+
+
+
+
+
+
+
+
+
 
 
 
